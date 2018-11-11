@@ -3,42 +3,63 @@ import pandas as pd
 import sqlite3
 import numpy as np
 
+def generator(m):
+	str_condition = "'%-" + str(m) + "-%'"
 
-conn = sqlite3.connect("Expenditure.db")
-dataframe = pd.read_sql_query("SELECT Item, sum(Cost) as Cost FROM Expenditure group by Item", conn)
-conn.close()
+	query1 = "SELECT Item, sum(Cost) as Cost FROM Expenditure where expenditure_date like " + str_condition + " group by Item order by Cost"
+	query2 = "SELECT expenditure_date, sum(Cost) as cost FROM Expenditure where expenditure_date like " + str_condition + " group by expenditure_date"
+	query3 = "SELECT sum(Cost) as total_cost FROM Expenditure where expenditure_date like " + str_condition
 
-print(dataframe)
 
-# dates = dataframe['expenditure_date']
-items = dataframe['Item']
-costs = dataframe['Cost']
+	conn = sqlite3.connect("Expenditure.db")
+	dataframe = pd.read_sql_query(query1, conn)
+	conn.close()
 
-explode = ()
-for i in items:
-	explode = explode + (0,)
+	print(dataframe)
 
-print(explode)
+	# dates = dataframe['expenditure_date']
+	items = dataframe['Item']
+	costs = dataframe['Cost']
 
-fig1, ax1 = plt.subplots()
+	explode = ()
+	for i in items:
+		explode = explode + (0,)
 
-ax1.pie(costs, explode = explode, labels = items, autopct='%1.1f%%',
-        shadow=True, startangle=90)
+	print(explode)
 
-ax1.axis('equal')
+	fig1, ax1 = plt.subplots()
 
-plt.tight_layout()
-plt.show()
+	ax1.pie(costs, explode = explode, labels = items, autopct='%1.1f%%',
+	        shadow=True, startangle=90)
 
-n = "05"
-conn = sqlite3.connect("Expenditure.db")
-dataframe = pd.read_sql_query("SELECT expenditure_date, sum(Cost) as cost FROM Expenditure where expenditure_date like '%-10-%' group by expenditure_date", conn)
-conn.close()
+	ax1.axis('equal')
 
-print(dataframe)
+	plt.tight_layout()
+	plt.savefig('pie_chart.png')
+	plt.show()
 
-expenditure_dates = dataframe['expenditure_date']
-costs = dataframe['cost']
 
-plt.bar(expenditure_dates, costs)
-plt.show()
+	plt.bar(items, costs)
+	plt.savefig('bar_chart1.png')
+	plt.show()
+
+
+	conn = sqlite3.connect("Expenditure.db")
+	dataframe = pd.read_sql_query(query2, conn)
+	conn.close()
+
+	print(dataframe)
+
+	expenditure_dates = dataframe['expenditure_date']
+	costs = dataframe['cost']
+
+	plt.bar(expenditure_dates, costs)
+	plt.savefig('bar_chart2.png')
+	plt.show()
+
+
+	conn = sqlite3.connect("Expenditure.db")
+	dataframe = pd.read_sql_query(query3, conn)
+	conn.close()
+
+	print(dataframe)
