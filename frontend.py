@@ -1,6 +1,5 @@
 # Expenditure Management
 from database import main_function
-import getpass # for password input
 from datetime import date # get todays date
 from report import generator
 
@@ -13,34 +12,23 @@ def display_head():
 
 def prompt_frontend():
 	print()
-	print("1) Credentials ")
-	print("2) Enter Expenditure")
-	print("3) Generate Report")
-	print("4) Exit")
+	print("1) Enter Expenditure")
+	print("2) Generate Report")
+	print("3) Exit")
 	print()
 	n = int(input("Enter your choice: "))
-	return n
-
-def credentials():
-	email = input("Enter your E-mail ID: ")
-	password = getpass.getpass()
-	return email, password
-	
+	return n	
 
 display_head()
 
 flag = 1
-
 
 while flag == 1:
 
 	choice = prompt_frontend()
 	
 
-	if choice == 1:
-		email_id, password = credentials()
-
-	elif choice == 2:
+	if choice == 1 : 
 		main_function()
 		q = input("Do you have more items to enter: ")
 		if q == 'y' or q == 'Y':
@@ -48,16 +36,21 @@ while flag == 1:
 		else:
 			flag = 0
 
-	elif choice == 3:
+	elif choice == 2 :
 		month = int(input('Enter the month number: '))
-		generator(month)
+		send_email = input('Want detailed report emailed y/n ?')
+		if send_email == 'y' : 
+			generator(month , True )
+		else : 
+			generator(month , False )
+			
+
 		flag = 0
-	else:
+	elif choice == 3 :
 		flag = 0
 
 	if flag == 0:
 		print('\nThank You\n')
-
 
 
 

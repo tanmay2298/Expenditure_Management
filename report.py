@@ -2,8 +2,9 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import sqlite3
 import numpy as np
+import send_email as SM
 
-def generator(m):
+def generator(m , send_email):
 	str_condition = "'%-" + str(m) + "-%'"
 
 	query1 = "SELECT Item, sum(Cost) as Cost FROM Expenditure where expenditure_date like " + str_condition + " group by Item order by Cost"
@@ -61,5 +62,8 @@ def generator(m):
 	conn = sqlite3.connect("Expenditure.db")
 	dataframe = pd.read_sql_query(query3, conn)
 	conn.close()
+
+	if send_email == True : 
+		SM.send_report ( ['bar_chart1.png' , 'bar_chart2.png' , 'pie_chart.png'] , m ) 
 
 	print(dataframe)
